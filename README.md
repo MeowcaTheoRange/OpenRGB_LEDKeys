@@ -14,40 +14,13 @@ After you are done, run `node corsair.js` (regardless of actual keyboard model) 
 
 ## Reset Settings
 
-First, open `settings.json` in a text editor and auto-format it:
+First, open `settings.json` in a text editor and auto-format it, then empty the main Object.
 
-```
-{
-  "2": {
-    "device": 0,
-    "zone": [
-      0,
-      1,
-      2
-    ],
-    "red": 255,
-    "green": 255,
-    "blue": 255,
-    "function": "noop",
-    "settings": {
-      "interval": 10,
-      "step": 25
-    }
-  },
-  ...
-  
-  ...
-  "devices": {
-    "0": "Corsair K55 RGB"
-  }
-}
-```
-
-Now empty the main Object:
+Make sure to keep the braces of the Object intact. This should be what it looks like after:
 ```
 {}
 ```
-And then save. You can now re-run `node config.js` for as many keys as you need to bind.
+Now save the file. You can re-run `node config.js` for as many keys as you need to bind.
 
 ## Troubleshooting
 
