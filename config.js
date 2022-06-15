@@ -3,7 +3,7 @@ const fs = require("fs");
 const ioHook = require('iohook');
 const client = new Client("Example", 6742, "localhost");
 const prompts = require('prompts');
-var { easings } = require("./eases.js");
+var { easings } = require("./packages/eases.js");
 (async () => {
   await client.connect();
   var count = await client.getControllerCount();

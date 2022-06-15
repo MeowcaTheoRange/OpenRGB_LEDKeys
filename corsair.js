@@ -2,7 +2,7 @@
 const ioHook = require('iohook');
 const { Client, utils } = require('openrgb-sdk');
 var settings = require("./settings.json");
-const { intervals, anims } = require("./lightFunctions.js");
+const { intervals, anims } = require("./packages/lightFunctions.js");
 const prompts = require('prompts');
 
 const client = new Client("Example", 6742, "localhost");
