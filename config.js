@@ -3,12 +3,14 @@ const fs = require("fs");
 const ioHook = require('iohook');
 const client = new Client("Example", 6742, "localhost");
 const prompts = require('prompts');
+var { easings } = require("./eases.js");
 (async () => {
   await client.connect();
   var count = await client.getControllerCount();
   var ctrarray = [];
   var ctrs = await client.getAllControllerData();
   var zones = [];
+  var formattedeases = [];
   ctrs.forEach((v, i) => {
     ctrarray.push({
       title: v.name,
@@ -21,6 +23,12 @@ const prompts = require('prompts');
         title: vv.name,
         value: ii
       })
+    })
+  })
+  Object.keys(easings).forEach((v) => {
+    formattedeases.push({
+      title: v.replace(/([A-Z])/g, ' $1').replace(/^./, function(str){ return str.toUpperCase(); }),
+      value: v
     })
   })
   console.log("Press a key to bind...");
@@ -131,27 +139,26 @@ const prompts = require('prompts');
         name: 'function',
         message: 'Select animation',
         choices: [
-          { title: 'Fade away', value: 'fade' },
+          { title: 'Fade out', value: 'fadeOut' },
+          { title: 'Fade in', value: 'fadeIn' },
           { title: 'Keep on', value: 'noop' }
         ],
       },
       {
-        type: 'number',
-        name: 'step',
-        message: 'The animation has a granularity of',
-        initial: 25,
-        style: 'default',
-        min: 10,
-        max: 100
+        type: 'select',
+        name: 'ease',
+        message: 'Select animation ease',
+        choices: formattedeases
       },
       {
         type: 'number',
-        name: 'interval',
-        message: 'One animation grain takes this much time',
-        initial: 10,
+        name: 'time',
+        message: 'The animation duration is',
+        initial: 1000,
+        increment: 50,
         style: 'default',
-        min: 10,
-        max: 1000
+        min: 250,
+        max: 100000
       },
     ]);
     fs.readFile("./settings.json", {encoding: "utf8"}, (err, data) => {
@@ -159,13 +166,14 @@ const prompts = require('prompts');
       if (jsondata.devices == undefined) jsondata.devices = {};
       jsondata.devices[sel] = deviceIdentification;
       response.settings = {};
-      response.settings.interval = response.interval;
-      response.settings.step = response.step;
-      response.interval = undefined;
-      response.step = undefined;
+      response.settings.time = response.time;
+      response.settings.ease = response.ease;
+      response.time = undefined;
+      response.ease = undefined;
       jsondata[keycodeJSWoo] = response;
       fs.writeFileSync("./settings.json", JSON.stringify(jsondata), {encoding: "utf8"});
-      process.exit();
+      console.log("Settings saved.");
+      process.kill(process.pid, 'SIGTERM');
     })
     client.updateLeds(0, Array((await client.getControllerData(0)).colors.length).fill({red: 0, green: 0, blue: 0}));
   });

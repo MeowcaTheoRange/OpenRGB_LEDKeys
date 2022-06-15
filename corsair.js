@@ -2,7 +2,7 @@
 const ioHook = require('iohook');
 const { Client, utils } = require('openrgb-sdk');
 var settings = require("./settings.json");
-const { intervals, fade, noop } = require("./lightFunctions.js");
+const { intervals, anims } = require("./lightFunctions.js");
 const prompts = require('prompts');
 
 const client = new Client("Example", 6742, "localhost");
@@ -56,14 +56,10 @@ function keyEventDef(settings) {
   if (Array.isArray(zone)) {
     zone.forEach((v) => {
       clearInterval(intervals[v]);
-      client.updateSingleLed(device, v, col);
-      if (settings.function)
-        eval(settings.function)(client, device, v, col, settings.settings);
+      anims[settings.function](client, device, v, col, settings.settings);
     })
   } else {
     clearInterval(intervals[zone]);
-    client.updateSingleLed(device, zone, col);
-    if (settings.function)
-      eval(settings.function)(client, device, zone, col, settings.settings);
+    anims[settings.function](client, device, zone, col, settings.settings);
   }
 }
